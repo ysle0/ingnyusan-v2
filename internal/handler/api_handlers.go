@@ -18,6 +18,7 @@ func (h *Handler) RegisterAPI(r chi.Router) {
 	r.Post("/api/preview", h.PreviewHandler)
 	r.Post("/api/save-post", h.SavePostHandler)
 	r.Get("/api/github-profile", h.GitHubProfileHandler)
+	r.Get("/api/toggle-theme", h.ToggleThemeHandler)
 }
 
 // PreviewHandler handles rendering markdown preview
@@ -31,7 +32,7 @@ func (h *Handler) PreviewHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Get the content
 	content := r.FormValue("content")
-	
+
 	// Parse the markdown
 	htmlContent, err := h.PostService.Parser.ParseMarkdown(content)
 	if err != nil {
@@ -69,7 +70,7 @@ func (h *Handler) SavePostHandler(w http.ResponseWriter, r *http.Request) {
 	// Format the tags
 	tags := []string{}
 	if tagsStr != "" {
-		for _, tag := range strings.Split(tagsStr, ",") {
+		for tag := range strings.SplitSeq(tagsStr, ",") {
 			tags = append(tags, strings.TrimSpace(tag))
 		}
 	}
@@ -153,4 +154,39 @@ func (h *Handler) GitHubProfileHandler(w http.ResponseWriter, r *http.Request) {
 	// Write the HTML
 	w.Header().Set("Content-Type", "text/html")
 	w.Write([]byte(html))
-} 
+}
+
+// ToggleThemeHandler toggles between light and dark theme
+func (h *Handler) ToggleThemeHandler(w http.ResponseWriter, r *http.Request) {
+	// Get current theme from cookie
+	var newTheme string
+	if cookie, err := r.Cookie("theme"); err == nil {
+		// Toggle theme
+		if cookie.Value == "dark" {
+			newTheme = "light"
+		} else {
+			newTheme = "dark"
+		}
+	} else {
+		// No cookie found, get default from config and toggle it
+		if h.Config.Theme.DefaultTheme == "dark" {
+			newTheme = "light"
+		} else {
+			newTheme = "dark"
+		}
+	}
+
+	// Set cookie with new theme
+	http.SetCookie(w, &http.Cookie{
+		Name:     "theme",
+		Value:    newTheme,
+		Path:     "/",
+		MaxAge:   365 * 24 * 60 * 60, // 1 year
+		HttpOnly: false,              // Allow JavaScript access
+		SameSite: http.SameSiteLaxMode,
+	})
+
+	// Return the new theme
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"theme": newTheme})
+}

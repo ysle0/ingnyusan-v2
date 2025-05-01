@@ -2,19 +2,22 @@ package templates
 
 import (
 	"fmt"
-	"blog/internal/parser"
+	"ingnyusan/v2/internal/parser"
+	"ingnyusan/v2/internal/i18n"
+	"net/http"
+	"ingnyusan/v2/internal/middleware"
 )
 
-templ HomePage(siteName string, posts []parser.Post) {
-	@layout(siteName) {
-		<h2>Recent Posts</h2>
-		@postList(posts)
+templ HomePage(siteName string, posts []parser.Post, translator *i18n.Translator, r *http.Request) {
+	@layout(siteName, translator, r) {
+		<h2>{ translator.T("home.title", middleware.GetLanguage(r)) }</h2>
+		@postList(posts, translator, r)
 	}
 }
 
-templ MePage(siteName string) {
-	@layout(siteName + " - About Me") {
-		<h2>About Me</h2>
+templ MePage(siteName string, translator *i18n.Translator, r *http.Request) {
+	@layout(siteName + " - " + translator.T("nav.me", middleware.GetLanguage(r)), translator, r) {
+		<h2>{ translator.T("nav.me", middleware.GetLanguage(r)) }</h2>
 		<p>Based on <a href="https://github.com/ysle0" target="_blank">https://github.com/ysle0</a></p>
 		
 		<div class="profile">
@@ -26,34 +29,34 @@ templ MePage(siteName string) {
 	}
 }
 
-templ PortfolioPage(siteName string) {
-	@layout(siteName + " - Portfolio") {
-		<h2>Portfolio</h2>
+templ PortfolioPage(siteName string, translator *i18n.Translator, r *http.Request) {
+	@layout(siteName + " - " + translator.T("nav.portfolio", middleware.GetLanguage(r)), translator, r) {
+		<h2>{ translator.T("nav.portfolio", middleware.GetLanguage(r)) }</h2>
 		<p>Coming soon...</p>
 	}
 }
 
-templ BooksPage(siteName string, posts []parser.Post) {
-	@layout(siteName + " - Book Reviews") {
-		<h2>Book Reviews</h2>
+templ BooksPage(siteName string, posts []parser.Post, translator *i18n.Translator, r *http.Request) {
+	@layout(siteName + " - " + translator.T("nav.books", middleware.GetLanguage(r)), translator, r) {
+		<h2>{ translator.T("nav.books", middleware.GetLanguage(r)) }</h2>
 		if len(posts) > 0 {
-			@postList(posts)
+			@postList(posts, translator, r)
 		} else {
 			<p>No book reviews yet.</p>
 		}
 	}
 }
 
-templ LanguagesPage(siteName string) {
-	@layout(siteName + " - Languages") {
-		<h2>Languages</h2>
+templ LanguagesPage(siteName string, translator *i18n.Translator, r *http.Request) {
+	@layout(siteName + " - " + translator.T("nav.languages", middleware.GetLanguage(r)), translator, r) {
+		<h2>{ translator.T("nav.languages", middleware.GetLanguage(r)) }</h2>
 		<p>Coming soon...</p>
 	}
 }
 
-templ ToolsPage(siteName string) {
-	@layout(siteName + " - Developer Tools") {
-		<h2>Developer Tools</h2>
+templ ToolsPage(siteName string, translator *i18n.Translator, r *http.Request) {
+	@layout(siteName + " - " + translator.T("nav.tools", middleware.GetLanguage(r)), translator, r) {
+		<h2>{ translator.T("nav.tools", middleware.GetLanguage(r)) }</h2>
 		<ul>
 			<li><a href="/tools/bitwise">Bitwise Operation Calculator</a></li>
 			<li><a href="/tools/jwt">JWT Inspector</a></li>
@@ -63,14 +66,14 @@ templ ToolsPage(siteName string) {
 	}
 }
 
-templ PostPage(siteName string, post parser.Post) {
-	@layout(siteName + " - " + post.Title) {
+templ PostPage(siteName string, post parser.Post, translator *i18n.Translator, r *http.Request) {
+	@layout(siteName + " - " + post.Title, translator, r) {
 		<article>
 			<header>
 				<h2>{ post.Title }</h2>
 				<div class="post-meta">
 					<span class="date">{ formatDate(post.Date) }</span>
-					<span class="time-to-read">{ fmt.Sprintf("%d", post.TimeToRead) } min read</span>
+					<span class="time-to-read">{ fmt.Sprintf("%d", post.TimeToRead) } { translator.T("post.timeToRead", middleware.GetLanguage(r)) }</span>
 				</div>
 				<div class="tags">
 					for _, tag := range post.Tags {
@@ -86,8 +89,8 @@ templ PostPage(siteName string, post parser.Post) {
 	}
 }
 
-templ EditorPage(siteName string) {
-	@layout(siteName + " - Post Editor") {
+templ EditorPage(siteName string, translator *i18n.Translator, r *http.Request) {
+	@layout(siteName + " - Post Editor", translator, r) {
 		<h2>Post Editor</h2>
 		<div class="editor-container">
 			<div class="editor-form">

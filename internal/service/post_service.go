@@ -9,16 +9,16 @@ import (
 	"sort"
 	"strings"
 
-	"blog/internal/parser"
+	"ingnyusan/v2/internal/parser"
 )
 
 // PostService handles operations related to blog posts
 type PostService struct {
-	Parser        *parser.MarkdownParser
-	PostsDir      string
-	posts         []parser.Post
-	postsBySlug   map[string]parser.Post
-	postsByTag    map[string][]parser.Post
+	Parser      *parser.MarkdownParser
+	PostsDir    string
+	posts       []parser.Post
+	postsBySlug map[string]parser.Post
+	postsByTag  map[string][]parser.Post
 }
 
 // NewPostService creates a new post service
@@ -148,7 +148,7 @@ func (ps *PostService) GenerateRSS(title, description, link string) string {
 	for _, post := range ps.GetRecentPosts(10) {
 		pubDate := post.Date.Format("Mon, 02 Jan 2006 15:04:05 -0700")
 		postLink := link + "/posts/" + post.Slug
-		
+
 		rss += `
     <item>
       <title>` + post.Title + `</title>
@@ -164,4 +164,4 @@ func (ps *PostService) GenerateRSS(title, description, link string) string {
 </rss>`
 
 	return rss
-} 
+}

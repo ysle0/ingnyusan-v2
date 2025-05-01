@@ -15,39 +15,39 @@ type Cache interface {
 	DeletePattern(ctx context.Context, pattern string) error
 }
 
-// RedisCache implements the Cache interface using Redis
-type RedisCache struct {
+// Cacher implements the Cache interface using Redis
+type Cacher struct {
 	client *redis.Client
 }
 
 // NewRedisCache creates a new Redis cache
-func NewRedisCache(redisURL string) *RedisCache {
+func NewRedisCache(redisURL string) *Cacher {
 	client := redis.NewClient(&redis.Options{
 		Addr: redisURL,
 	})
 
-	return &RedisCache{
+	return &Cacher{
 		client: client,
 	}
 }
 
 // Get retrieves a value from the cache
-func (c *RedisCache) Get(ctx context.Context, key string) (string, error) {
+func (c *Cacher) Get(ctx context.Context, key string) (string, error) {
 	return c.client.Get(ctx, key).Result()
 }
 
 // Set stores a value in the cache with a TTL
-func (c *RedisCache) Set(ctx context.Context, key string, value string, ttl time.Duration) error {
+func (c *Cacher) Set(ctx context.Context, key string, value string, ttl time.Duration) error {
 	return c.client.Set(ctx, key, value, ttl).Err()
 }
 
 // Delete removes a value from the cache
-func (c *RedisCache) Delete(ctx context.Context, key string) error {
+func (c *Cacher) Delete(ctx context.Context, key string) error {
 	return c.client.Del(ctx, key).Err()
 }
 
 // DeletePattern removes all keys matching a pattern
-func (c *RedisCache) DeletePattern(ctx context.Context, pattern string) error {
+func (c *Cacher) DeletePattern(ctx context.Context, pattern string) error {
 	keys, err := c.client.Keys(ctx, pattern).Result()
 	if err != nil {
 		return err
@@ -56,11 +56,11 @@ func (c *RedisCache) DeletePattern(ctx context.Context, pattern string) error {
 	if len(keys) > 0 {
 		return c.client.Del(ctx, keys...).Err()
 	}
-	
+
 	return nil
 }
 
 // Close closes the Redis connection
-func (c *RedisCache) Close() error {
+func (c *Cacher) Close() error {
 	return c.client.Close()
-} 
+}

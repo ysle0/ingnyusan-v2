@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"blog/internal/cache"
+	"ingnyusan/v2/internal/cache"
 )
 
 // CachedResponseWriter is a custom ResponseWriter that captures the response
@@ -97,7 +97,7 @@ func CacheInvalidator(c cache.Cache) func(http.Handler) http.Handler {
 
 				// Invalidate any tag-based pages that might be affected
 				if tags := r.FormValue("tags"); tags != "" {
-					for _, tag := range strings.Split(tags, ",") {
+					for tag := range strings.SplitSeq(tags, ",") {
 						tag = strings.TrimSpace(tag)
 						if tag == "book" {
 							c.Delete(context.Background(), "page:/books")

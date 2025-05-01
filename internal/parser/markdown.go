@@ -41,9 +41,7 @@ func NewMarkdownParser() *MarkdownParser {
 		),
 	)
 
-	return &MarkdownParser{
-		md: md,
-	}
+	return &MarkdownParser{md}
 }
 
 // ParseMarkdown converts markdown to HTML
@@ -71,9 +69,10 @@ func (mp *MarkdownParser) ParsePost(content string, slug string) (Post, error) {
 	description := extractFrontmatterValue(frontmatter, "description")
 	dateStr := extractFrontmatterValue(frontmatter, "date")
 	tagsStr := extractFrontmatterValue(frontmatter, "tags")
+	language := extractFrontmatterValue(frontmatter, "language")
 
 	// Parse date
-	date, err := time.Parse("2006-01-02", dateStr)
+	date, err := time.Parse("YYYY-MM-dd", dateStr)
 	if err != nil {
 		// Use current time if date is invalid
 		date = time.Now()
@@ -87,9 +86,24 @@ func (mp *MarkdownParser) ParsePost(content string, slug string) (Post, error) {
 		}
 	}
 
-	// Calculate time to read (average reading speed: ~200 words per minute)
+	// Calculate time to read based on language
+	// Default reading speeds:
+	// - English: ~200-250 words per minute
+	// - Korean: ~150-180 chars per minute (different measurement due to language structure)
 	words := len(strings.Fields(mdContent))
-	timeToRead := words / 200
+	timeToRead := 0
+
+	if strings.ToLower(language) == "korean" || strings.ToLower(language) == "ko" {
+		// For Korean: count characters instead of words
+		// Average reading speed ~150-180 characters per minute for native speakers
+		chars := len(strings.ReplaceAll(mdContent, " ", ""))
+		timeToRead = chars / 180
+	} else {
+		// For English and other languages: use word count
+		// Average reading speed ~200-250 words per minute
+		timeToRead = words / 200
+	}
+
 	if timeToRead < 1 {
 		timeToRead = 1
 	}
@@ -109,7 +123,7 @@ func (mp *MarkdownParser) ParsePost(content string, slug string) (Post, error) {
 // extractFrontmatter separates frontmatter from markdown content
 func extractFrontmatter(content string) (string, string) {
 	const frontmatterDelimiter = "---"
-	
+
 	// Check if content has frontmatter
 	lines := strings.Split(content, "\n")
 	if len(lines) < 2 || lines[0] != frontmatterDelimiter {
@@ -143,11 +157,11 @@ func extractFrontmatterValue(frontmatter string, key string) string {
 		if len(parts) != 2 {
 			continue
 		}
-		
+
 		k := strings.TrimSpace(parts[0])
 		if k == key {
 			return strings.TrimSpace(parts[1])
 		}
 	}
 	return ""
-} 
+}

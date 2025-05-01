@@ -1,0 +1,25 @@
+# Blog configuration
+
+# Server settings
+[server]
+port = "8080"
+base_url = "http://localhost:8080"
+
+# Content settings
+[content]
+posts_dir = "./posts"
+site_name = "My Blog"
+
+# Redis cache settings
+[redis]
+url = "localhost:6379"
+cache_ttl = "10m" # Duration format: 10m = 10 minutes, 1h = 1 hour
+
+# Internationalization settings
+[i18n]
+translations_dir = "./translations"
+default_lang = "en" # en, ko, fr, nl
+
+# Theme settings
+[theme]
+default_theme = "light" # light or dark 

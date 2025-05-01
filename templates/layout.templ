@@ -2,20 +2,26 @@ package templates
 
 import (
 	"fmt"
-	"blog/internal/parser"
+	"ingnyusan/v2/internal/i18n"
+	"ingnyusan/v2/internal/middleware"
+	"ingnyusan/v2/internal/parser"
+	"net/http"
 )
 
-templ layout(title string) {
+templ layout(title string, translator *i18n.Translator, r *http.Request) {
 	<!DOCTYPE html>
-	<html lang="en">
+	<html lang={ middleware.GetLanguage(r) } data-theme={ getThemeFromRequest(r) }>
 		<head>
-			<meta charset="UTF-8" />
-			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>{ title }</title>
-			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
-			<link rel="stylesheet" href="/static/css/style.css" />
-			<link rel="alternate" type="application/rss+xml" title={ title } href="/rss" />
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"/>
+			<link rel="stylesheet" href="/static/css/style.css"/>
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+			<link rel="alternate" type="application/rss+xml" title={ title } href="/rss"/>
 			<script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+			<script src="/static/js/theme.js"></script>
+			<script src="/static/js/navbar.js"></script>
 			<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 			<script>
 				window.dataLayer = window.dataLayer || [];
@@ -25,46 +31,63 @@ templ layout(title string) {
 			</script>
 		</head>
 		<body>
-			@header()
+			@header(translator, r)
 			<main>
 				{ children... }
 			</main>
-			@footer()
+			@footer(translator, r)
 		</body>
 	</html>
 }
 
-templ header() {
+templ header(translator *i18n.Translator, r *http.Request) {
 	<header>
 		<nav>
-			<h1><a href="/">Blog</a></h1>
+			<h1><a href="/">{ translator.T("site.title", middleware.GetLanguage(r)) }</a></h1>
 			<ul>
-				<li><a href="/">Home</a></li>
-				<li><a href="/me">Me</a></li>
-				<li><a href="/portfolio">Portfolio</a></li>
-				<li><a href="/books">Books</a></li>
-				<li><a href="/languages">Languages</a></li>
-				<li><a href="/tools">Tools</a></li>
+				<li><a href="/">{ translator.T("nav.home", middleware.GetLanguage(r)) }</a></li>
+				<li><a href="/me">{ translator.T("nav.me", middleware.GetLanguage(r)) }</a></li>
+				<li><a href="/portfolio">{ translator.T("nav.portfolio", middleware.GetLanguage(r)) }</a></li>
+				<li><a href="/books">{ translator.T("nav.books", middleware.GetLanguage(r)) }</a></li>
+				<li><a href="/languages">{ translator.T("nav.languages", middleware.GetLanguage(r)) }</a></li>
+				<li><a href="/tools">{ translator.T("nav.tools", middleware.GetLanguage(r)) }</a></li>
+				<div class="nav-icons">
+					<li class="theme-toggle" id="theme-toggle" data-theme-toggle>
+						<span class="theme-icon">
+							<i class="fas fa-sun" id="sun-icon" style="display: none;"></i>
+							<i class="fas fa-moon" id="moon-icon"></i>
+						</span>
+					</li>
+					<li class="language-selector" data-theme-toggle>
+						<span class="globe-icon"><i class="fas fa-globe"></i></span>
+						<div class="language-menu">
+							<a href="?lang=en">English</a>
+							<a href="?lang=ko">한국어</a>
+							<a href="?lang=fr">Français</a>
+							<a href="?lang=nl">Nederlands</a>
+						</div>
+					</li>
+				</div>
 			</ul>
 		</nav>
 	</header>
 }
 
-templ footer() {
+templ footer(translator *i18n.Translator, r *http.Request) {
 	<footer>
-		<p>&copy; { currentYear() } - Built with Go, Chi, HTMX, and templ</p>
-		<p><a href="/rss">RSS Feed</a></p>
+		<p>{ translator.T("footer.copyright", middleware.GetLanguage(r)) }</p>
+		<p><a href="/rss">{ translator.T("footer.rss", middleware.GetLanguage(r)) }</a></p>
 	</footer>
 }
 
-templ postList(posts []parser.Post) {
+templ postList(posts []parser.Post, translator *i18n.Translator, r *http.Request) {
 	<ul class="post-list">
 		for _, post := range posts {
 			<li>
-				<h3><a href={templ.SafeURL("/posts/" + post.Slug)}>{ post.Title }</a></h3>
+				<h3><a href={ templ.SafeURL("/posts/" + post.Slug) }>{ post.Title }</a></h3>
 				<div class="post-meta">
 					<span class="date">{ formatDate(post.Date) }</span>
-					<span class="time-to-read">{ fmt.Sprintf("%d", post.TimeToRead) } min read</span>
+					<span class="time-to-read">{ fmt.Sprintf("%d", post.TimeToRead) } { translator.T("post.timeToRead", middleware.GetLanguage(r)) }</span>
 				</div>
 				<p>{ post.Description }</p>
 				<div class="tags">
@@ -75,4 +98,4 @@ templ postList(posts []parser.Post) {
 			</li>
 		}
 	</ul>
-} 
+}

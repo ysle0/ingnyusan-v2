@@ -1,0 +1,17 @@
+{
+  "site.title": "Ingnyusan",
+  "site.description": "Een minimalistische blogwebsite gebouwd met Go",
+  "nav.home": "Home",
+  "nav.me": "Over mij",
+  "nav.portfolio": "Portfolio",
+  "nav.books": "Boeken",
+  "nav.languages": "Talen",
+  "nav.tools": "Tools",
+  "footer.copyright": "© 2025 - Gebouwd met Go, Chi, HTMX, en templ",
+  "footer.rss": "RSS Feed",
+  "post.timeToRead": "min leestijd",
+  "home.title": "Recente Berichten",
+  "home.readMore": "Lees meer",
+  "error.404": "Pagina niet gevonden",
+  "error.500": "Interne serverfout"
+}

@@ -1,0 +1,17 @@
+{
+  "site.title": "잉뉴산",
+  "site.description": "Go로 구축된 미니멀리스트 블로그 웹사이트",
+  "nav.home": "홈",
+  "nav.me": "소개",
+  "nav.portfolio": "포트폴리오",
+  "nav.books": "도서",
+  "nav.languages": "언어",
+  "nav.tools": "도구",
+  "footer.copyright": "© 2025 - Go, Chi, HTMX, templ로 제작",
+  "footer.rss": "RSS 피드",
+  "post.timeToRead": "분 소요",
+  "home.title": "최근 게시물",
+  "home.readMore": "더 읽기",
+  "error.404": "페이지를 찾을 수 없습니다",
+  "error.500": "내부 서버 오류"
+}

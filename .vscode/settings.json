@@ -5,5 +5,10 @@
         "activityBarBadge.foreground": "#262626",
         "statusBar.background": "#262626",
         "statusBar.foreground": "#e9dbb7"
-    }
+    },
+    "cSpell.words": [
+        "Frontmatter",
+        "goldmark",
+        "ingnyusan"
+    ]
 }

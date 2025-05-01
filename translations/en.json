@@ -1,0 +1,17 @@
+{
+  "site.title": "Ingnyusan",
+  "site.description": "A minimalist blog website built with Go",
+  "nav.home": "Home",
+  "nav.me": "Me",
+  "nav.portfolio": "Portfolio",
+  "nav.books": "Books",
+  "nav.languages": "Languages",
+  "nav.tools": "Tools",
+  "footer.copyright": "© 2025 - Built with Go, Chi, HTMX, and templ",
+  "footer.rss": "RSS Feed",
+  "post.timeToRead": "min read",
+  "home.title": "Latest Posts",
+  "home.readMore": "Read more",
+  "error.404": "Page not found",
+  "error.500": "Internal server error"
+}
