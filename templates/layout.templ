@@ -1,0 +1,78 @@
+package templates
+
+import (
+	"fmt"
+	"blog/internal/parser"
+)
+
+templ layout(title string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8" />
+			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+			<title>{ title }</title>
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+			<link rel="stylesheet" href="/static/css/style.css" />
+			<link rel="alternate" type="application/rss+xml" title={ title } href="/rss" />
+			<script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+			<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+			<script>
+				window.dataLayer = window.dataLayer || [];
+				function gtag(){dataLayer.push(arguments);}
+				gtag('js', new Date());
+				gtag('config', 'G-XXXXXXXXXX');
+			</script>
+		</head>
+		<body>
+			@header()
+			<main>
+				{ children... }
+			</main>
+			@footer()
+		</body>
+	</html>
+}
+
+templ header() {
+	<header>
+		<nav>
+			<h1><a href="/">Blog</a></h1>
+			<ul>
+				<li><a href="/">Home</a></li>
+				<li><a href="/me">Me</a></li>
+				<li><a href="/portfolio">Portfolio</a></li>
+				<li><a href="/books">Books</a></li>
+				<li><a href="/languages">Languages</a></li>
+				<li><a href="/tools">Tools</a></li>
+			</ul>
+		</nav>
+	</header>
+}
+
+templ footer() {
+	<footer>
+		<p>&copy; { currentYear() } - Built with Go, Chi, HTMX, and templ</p>
+		<p><a href="/rss">RSS Feed</a></p>
+	</footer>
+}
+
+templ postList(posts []parser.Post) {
+	<ul class="post-list">
+		for _, post := range posts {
+			<li>
+				<h3><a href={templ.SafeURL("/posts/" + post.Slug)}>{ post.Title }</a></h3>
+				<div class="post-meta">
+					<span class="date">{ formatDate(post.Date) }</span>
+					<span class="time-to-read">{ fmt.Sprintf("%d", post.TimeToRead) } min read</span>
+				</div>
+				<p>{ post.Description }</p>
+				<div class="tags">
+					for _, tag := range post.Tags {
+						<span class="tag">{ tag }</span>
+					}
+				</div>
+			</li>
+		}
+	</ul>
+} 

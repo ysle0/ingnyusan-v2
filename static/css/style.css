@@ -1,0 +1,152 @@
+/* Base styles */
+:root {
+  --max-width: 800px;
+  --spacing: 1rem;
+}
+
+body {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--spacing);
+  line-height: 1.6;
+}
+
+/* Header */
+header {
+  margin-bottom: 2rem;
+}
+
+header nav {
+  display: flex;
+  flex-direction: column;
+}
+
+header nav h1 {
+  margin-bottom: 0.5rem;
+}
+
+header nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+header nav ul li {
+  margin-right: 1rem;
+}
+
+/* Footer */
+footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  text-align: center;
+  border-top: 1px solid #eee;
+}
+
+/* Post list */
+.post-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.post-list li {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.post-list li:last-child {
+  border-bottom: none;
+}
+
+.post-meta {
+  display: flex;
+  margin-bottom: 0.5rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.post-meta span {
+  margin-right: 1rem;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.tag {
+  padding: 0.2rem 0.5rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  background-color: #f0f0f0;
+  border-radius: 3px;
+  font-size: 0.8rem;
+}
+
+/* Post content */
+.post-content {
+  margin-top: 2rem;
+}
+
+/* Editor */
+.editor-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .editor-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+}
+
+/* GitHub profile */
+.github-profile {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #eee;
+  border-radius: 5px;
+}
+
+.profile-image {
+  max-width: 100px;
+  border-radius: 50%;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .tag {
+    background-color: #333;
+  }
+  
+  .post-list li {
+    border-bottom-color: #333;
+  }
+  
+  footer {
+    border-top-color: #333;
+  }
+  
+  .github-profile {
+    border-color: #333;
+  }
+} 
